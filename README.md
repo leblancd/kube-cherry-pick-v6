@@ -3,7 +3,7 @@ Bash script for cherry picking outstanding Kubernetes pull requests
 that are necessary for Kubernetes cluster IPv6 operation.
 
 ```
-usage: kube_v6_cherry_pick.sh [-h | --help ] [-u | --update-master] [-b branch-name | --branch branch-name]
+usage: kube_cherry_pick_v6.sh [-h | --help ] [-u | --update-master] [-b branch-name | --branch branch-name]
   -h,--help                 Display help
   -u,--update-master        Update master branch
   -b,--branch branch-name   Create local branch with specified name
@@ -24,14 +24,14 @@ file that sets the kube-proxy bind address to ::0, e.g.:
     api:
       advertiseAddress: <YOUR-KUBE-MASTER-IPv6-ADDRESS>
     kubeProxy:
-      bindAddress: ::0
+      bindAddress: "::"
     etcd:
       image: diverdane/etcd-amd64:3.0.17
     networking:
       serviceSubnet: fd00:1234::/110
     imageRepository: <YOUR-DOCKER-REGISTRY>
     kubernetesVersion: v1.8.0
-    tokenTTL: 0
+    tokenTTL: 0s
     nodeName: kube-master
     EOT
 ```
