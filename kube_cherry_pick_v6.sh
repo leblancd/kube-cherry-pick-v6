@@ -83,6 +83,14 @@ counter=$((counter+1))
 curl https://patch-diff.githubusercontent.com/raw/kubernetes/kubernetes/pull/52028.patch | git am
 counter=$((counter+1))
 
+# "Removed the IPv6 prefix size limit for cluster-cidr"
+curl https://patch-diff.githubusercontent.com/raw/kubernetes/kubernetes/pull/52033.patch | git am
+counter=$((counter+1))
+
+# "Add check for IPv6 '::' when calculating kube-proxy's node IP"
+curl https://patch-diff.githubusercontent.com/raw/kubernetes/kubernetes/pull/52614.patch | git am
+counter=$((counter+1))
+
 # "kube-dns IPv6 changes and use type SRV sidecar probes"
 git remote add leblancd https://github.com/leblancd/$repo.git
 git remote set-url --push leblancd no_push
