@@ -64,27 +64,27 @@ fi
 counter=0
 
 # "Updates RangeSize error message and tests for IPv6"
-curl https://patch-diff.githubusercontent.com/raw/kubernetes/kubernetes/pull/47621.patch | git am
+git pull upstream pull/47621/head
 counter=$((counter+1))
 
 # "Add IPv6 support to iptables proxier"
-curl https://patch-diff.githubusercontent.com/raw/kubernetes/kubernetes/pull/48551.patch | git am
+git pull upstream pull/48551/head
 counter=$((counter+1))
 
 # "Add kubeadm config for setting kube-proxy bind address"
-curl https://patch-diff.githubusercontent.com/raw/kubernetes/kubernetes/pull/50929.patch | git am
+git pull upstream pull/50929/head
 counter=$((counter+1))
 
 # "Fix kube-proxy to use proper iptables commands for IPv6"
-curl https://patch-diff.githubusercontent.com/raw/kubernetes/kubernetes/pull/50478.patch | git am
+git pull upstream pull/50478/head
 counter=$((counter+1))
 
 # "Add required family flag for conntrack IPv6 operation"
-curl https://patch-diff.githubusercontent.com/raw/kubernetes/kubernetes/pull/52028.patch | git am
+git pull upstream pull/52028/head
 counter=$((counter+1))
 
 # "Removed the IPv6 prefix size limit for cluster-cidr"
-curl https://patch-diff.githubusercontent.com/raw/kubernetes/kubernetes/pull/52033.patch | git am
+git pull upstream pull/52033/head
 counter=$((counter+1))
 
 # "kube-dns IPv6 changes and use type SRV sidecar probes"
