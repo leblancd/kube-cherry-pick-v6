@@ -67,10 +67,6 @@ counter=0
 git pull upstream pull/47621/head
 counter=$((counter+1))
 
-# "Add IPv6 support to iptables proxier"
-git pull upstream pull/48551/head
-counter=$((counter+1))
-
 # "Add kubeadm config for setting kube-proxy bind address"
 git pull upstream pull/50929/head
 counter=$((counter+1))
@@ -79,12 +75,52 @@ counter=$((counter+1))
 git pull upstream pull/50478/head
 counter=$((counter+1))
 
-# "Add required family flag for conntrack IPv6 operation"
-git pull upstream pull/52028/head
-counter=$((counter+1))
-
 # "Removed the IPv6 prefix size limit for cluster-cidr"
 git pull upstream pull/52033/head
+counter=$((counter+1))
+
+# "Adds Support for Configurable Kubeadm Probes"
+git pull upstream pull/head/53484
+counter=$((counter+1))
+
+# "Adds Support for Node Resource IPv6 Addressing"
+git pull upstream pull/head/45551
+counter=$((counter+1))
+
+# "kubenet: do not generate HW addr for IPv6"
+git pull upstream pull/head/48729
+counter=$((counter+1))
+
+# "ip6tables should be set in the noop plugin"
+git pull upstream pull/head/53148
+counter=$((counter+1))
+
+# "Kubeadm should check for bridge-nf-call-ip6tables"
+git pull upstream pull/head/53014
+counter=$((counter+1))
+
+# "Updating kubenet for CNI with IPv6"
+git pull upstream pull/head/52180
+counter=$((counter+1))
+
+# "Updating NewCIDRSet return a value"
+git pull upstream pull/head/45792
+counter=$((counter+1))
+
+# "Fix duplicate unbind action in kube-proxy"
+git pull upstream pull/head/51686
+counter=$((counter+1))
+
+# "Fallback to internal addrs in e2e tests when no external addrs available"
+git pull upstream pull/head/53569
+counter=$((counter+1))
+
+# "Fix IP calculation for IPv6 in proxier's deleteEndpointConnections"
+git pull upstream pull/head/53555
+counter=$((counter+1))
+
+# "Add brackets around IPv6 addrs in e2e test IP:port endpoints"
+git pull upstream pull/head/52748
 counter=$((counter+1))
 
 # "kube-dns IPv6 changes and use type SRV sidecar probes"
