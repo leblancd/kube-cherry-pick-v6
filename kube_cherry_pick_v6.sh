@@ -11,13 +11,16 @@
 # to $GOPATH/src/k8s.io/kubernetes.
 ################################################################
 
-repo=kubernetes
-working_dir=$GOPATH/src/k8s.io/$repo
+set -o errexit
+set -o nounset
+set -o pipefail
+
+working_dir=$GOPATH/src/k8s.io/kubernetes
 
 function usage {
     echo "usage: $0 [-h | --help ] [-u | --update-master] [-b branch-name | --branch branch-name]"
     echo "  -h,--help                 Display help"
-    echo "  -u,--update-master        Update master branch"
+    echo "  -u,--upstream-rebase      Rebase to upstream master"
     echo "  -b,--branch branch-name   Create local branch with specified name"
     exit 1
 }
@@ -35,7 +38,7 @@ case $key in
     BRANCH="$2"
     shift # past argument
     ;;
-    -u|--update-master)
+    -u|--upstream-rebase)
     UPDATE=true
     ;;
     *)
@@ -48,83 +51,105 @@ done
 # Display usage information if requested
 if [[ $HELP ]]; then usage; fi
 
-# Update master branch if requested
-if [[ $UPDATE ]]; then
-    cd $working_dir
-    git checkout master
-    git fetch upstream
-    git rebase upstream/master
-fi
+# Start out in working directory
+cd $working_dir
 
+# Create branch if requested
 if [[ $BRANCH ]]; then
     git checkout -b $BRANCH
+fi
+
+# Rebase to upstream master if requested
+if [[ $UPDATE ]]; then
+    git fetch upstream
+    git rebase upstream/master
 fi
 
 # Cherry pick IPv6-related pull requests
 counter=0
 
-# "Updates RangeSize error message and tests for IPv6"
-git pull upstream pull/47621/head
-counter=$((counter+1))
-
+# REQUIRED FOR IPv6 e2e TEST SUITE
 # "Add kubeadm config for setting kube-proxy bind address"
-git pull upstream pull/50929/head
-counter=$((counter+1))
-
-# "Fix kube-proxy to use proper iptables commands for IPv6"
-git pull upstream pull/50478/head
-counter=$((counter+1))
-
-# "Removed the IPv6 prefix size limit for cluster-cidr"
-git pull upstream pull/52033/head
+# https://github.com/kubernetes/kubernetes/pull/50929
+git fetch upstream && git cherry-pick 99dc688
 counter=$((counter+1))
 
 # "Adds Support for Configurable Kubeadm Probes"
-git pull upstream pull/head/53484
+# https://github.com/kubernetes/kubernetes/pull/53484
+git fetch upstream && git cherry-pick e4f51cc
 counter=$((counter+1))
 
 # "Adds Support for Node Resource IPv6 Addressing"
-git pull upstream pull/head/45551
+# https://github.com/kubernetes/kubernetes/pull/45551
+git fetch upstream && git cherry-pick dde5486
 counter=$((counter+1))
 
 # "kubenet: do not generate HW addr for IPv6"
-git pull upstream pull/head/48729
+# https://github.com/kubernetes/kubernetes/pull/48729
+git fetch upstream && git cherry-pick c78fbca
 counter=$((counter+1))
 
 # "ip6tables should be set in the noop plugin"
-git pull upstream pull/head/53148
+# https://github.com/kubernetes/kubernetes/pull/53148
+git remote add rpothier https://github.com/rpothier/kubernetes.git
+git remote set-url --push rpothier no_push
+git fetch rpothier plugins-ipv6 && git cherry-pick FETCH_HEAD
 counter=$((counter+1))
 
+##### NEEDS REBASE - REBASED AND PUSHED TO leblancd github ########
 # "Kubeadm should check for bridge-nf-call-ip6tables"
-git pull upstream pull/head/53014
+# https://github.com/kubernetes/kubernetes/pull/53014
+# git fetch upstream && git cherry-pick 1a84e55
+git remote add leblancd https://github.com/leblancd/kubernetes.git
+git remote set-url --push leblancd no_push
+git fetch leblancd v6_robs_53014 && git cherry-pick FETCH_HEAD
 counter=$((counter+1))
 
 # "Updating kubenet for CNI with IPv6"
-git pull upstream pull/head/52180
+# https://github.com/kubernetes/kubernetes/pull/52180
+git fetch upstream && git cherry-pick 68c8538
 counter=$((counter+1))
 
+##### NEEDS REBASE - REBASED AND PUSHED TO leblancd github ########
 # "Updating NewCIDRSet return a value"
-git pull upstream pull/head/45792
+# https://github.com/kubernetes/kubernetes/pull/45792
+# git fetch upstream && git cherry-pick 433a851
+git fetch leblancd v6_robs_45792 && git cherry-pick FETCH_HEAD
 counter=$((counter+1))
 
 # "Fix duplicate unbind action in kube-proxy"
-git pull upstream pull/head/51686
+# https://github.com/kubernetes/kubernetes/pull/51686
+git fetch upstream && git cherry-pick 00f8ae3
 counter=$((counter+1))
 
+# REQUIRED FOR IPv6 e2e TEST SUITE
 # "Fallback to internal addrs in e2e tests when no external addrs available"
-git pull upstream pull/head/53569
+# https://github.com/kubernetes/kubernetes/pull/53569
+git fetch upstream && git cherry-pick 81ff1f8
 counter=$((counter+1))
 
-# "Fix IP calculation for IPv6 in proxier's deleteEndpointConnections"
-git pull upstream pull/head/53555
+# "Add IPv6 and negative UT test cases for proxier's deleteEndpointConnections"
+# https://github.com/kubernetes/kubernetes/pull/53555
+git fetch upstream && git cherry-pick 799341f
 counter=$((counter+1))
 
+# REQUIRED FOR IPv6 e2e TEST SUITE
 # "Add brackets around IPv6 addrs in e2e test IP:port endpoints"
-git pull upstream pull/head/52748
+# https://github.com/kubernetes/kubernetes/pull/52748
+git fetch upstream && git cherry-pick 01c65ff
 counter=$((counter+1))
 
+# "Hack to leave conntrack max per core zero, so that later..."
+# https://github.com/pmichali/kubernetes/tree/ipv4-ipv6
+git remote add pmichali https://github.com/pmichali/kubernetes.git
+git remote set-url --push pmichali no_push
+git fetch pmichali ipv4-ipv6 && git cherry-pick FETCH_HEAD
+counter=$((counter+1))
+
+# REQUIRED FOR IPv6 e2e TEST SUITE
 # "kube-dns IPv6 changes and use type SRV sidecar probes"
-git remote add leblancd https://github.com/leblancd/$repo.git
+# https://github.com/leblancd/kubernetes/tree/v6_dns_probes
+git remote add leblancd https://github.com/leblancd/kubernetes.git
 git remote set-url --push leblancd no_push
 git fetch leblancd v6_dns_probes && git cherry-pick FETCH_HEAD
 counter=$((counter+1))
