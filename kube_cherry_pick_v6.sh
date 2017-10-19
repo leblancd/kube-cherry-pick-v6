@@ -65,15 +65,15 @@ if [[ $UPDATE ]]; then
 fi
 
 # Add contributor remotes if necessary, and disable direct commits
-if not git remote | grep rpothier > /dev/null; then
+if ! git remote | grep rpothier > /dev/null; then
   git remote add rpothier https://github.com/rpothier/kubernetes.git
   git remote set-url --push rpothier no_push
 fi
-if not git remote | grep pmichali > /dev/null; then
+if ! git remote | grep pmichali > /dev/null; then
   git remote add pmichali https://github.com/pmichali/kubernetes.git
   git remote set-url --push pmichali no_push
 fi
-if not git remote | grep leblancd > /dev/null; then
+if ! git remote | grep leblancd > /dev/null; then
   git remote add leblancd https://github.com/leblancd/kubernetes.git
   git remote set-url --push leblancd no_push
 fi
@@ -95,11 +95,6 @@ counter=$((counter+1))
 # "Adds Support for Node Resource IPv6 Addressing"
 # https://github.com/kubernetes/kubernetes/pull/45551
 git fetch upstream && git cherry-pick dde5486
-counter=$((counter+1))
-
-# "kubenet: do not generate HW addr for IPv6"
-# https://github.com/kubernetes/kubernetes/pull/48729
-git fetch upstream && git cherry-pick c78fbca
 counter=$((counter+1))
 
 # "ip6tables should be set in the noop plugin"
@@ -124,11 +119,6 @@ counter=$((counter+1))
 # https://github.com/kubernetes/kubernetes/pull/45792
 # git fetch upstream && git cherry-pick 433a851
 git fetch leblancd v6_robs_45792 && git cherry-pick FETCH_HEAD
-counter=$((counter+1))
-
-# "Fix duplicate unbind action in kube-proxy"
-# https://github.com/kubernetes/kubernetes/pull/51686
-git fetch upstream && git cherry-pick 00f8ae3
 counter=$((counter+1))
 
 # REQUIRED FOR IPv6 e2e TEST SUITE
