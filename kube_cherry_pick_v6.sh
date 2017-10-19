@@ -12,7 +12,6 @@
 ################################################################
 
 set -o errexit
-set -o nounset
 set -o pipefail
 
 working_dir=$GOPATH/src/k8s.io/kubernetes
@@ -65,6 +64,20 @@ if [[ $UPDATE ]]; then
     git rebase upstream/master
 fi
 
+# Add contributor remotes if necessary, and disable direct commits
+if not git remote | grep rpothier > /dev/null; then
+  git remote add rpothier https://github.com/rpothier/kubernetes.git
+  git remote set-url --push rpothier no_push
+fi
+if not git remote | grep pmichali > /dev/null; then
+  git remote add pmichali https://github.com/pmichali/kubernetes.git
+  git remote set-url --push pmichali no_push
+fi
+if not git remote | grep leblancd > /dev/null; then
+  git remote add leblancd https://github.com/leblancd/kubernetes.git
+  git remote set-url --push leblancd no_push
+fi
+
 # Cherry pick IPv6-related pull requests
 counter=0
 
@@ -91,8 +104,6 @@ counter=$((counter+1))
 
 # "ip6tables should be set in the noop plugin"
 # https://github.com/kubernetes/kubernetes/pull/53148
-git remote add rpothier https://github.com/rpothier/kubernetes.git
-git remote set-url --push rpothier no_push
 git fetch rpothier plugins-ipv6 && git cherry-pick FETCH_HEAD
 counter=$((counter+1))
 
@@ -100,8 +111,6 @@ counter=$((counter+1))
 # "Kubeadm should check for bridge-nf-call-ip6tables"
 # https://github.com/kubernetes/kubernetes/pull/53014
 # git fetch upstream && git cherry-pick 1a84e55
-git remote add leblancd https://github.com/leblancd/kubernetes.git
-git remote set-url --push leblancd no_push
 git fetch leblancd v6_robs_53014 && git cherry-pick FETCH_HEAD
 counter=$((counter+1))
 
@@ -141,16 +150,12 @@ counter=$((counter+1))
 
 # "Hack to leave conntrack max per core zero, so that later..."
 # https://github.com/pmichali/kubernetes/tree/ipv4-ipv6
-git remote add pmichali https://github.com/pmichali/kubernetes.git
-git remote set-url --push pmichali no_push
 git fetch pmichali ipv4-ipv6 && git cherry-pick FETCH_HEAD
 counter=$((counter+1))
 
 # REQUIRED FOR IPv6 e2e TEST SUITE
 # "kube-dns IPv6 changes and use type SRV sidecar probes"
 # https://github.com/leblancd/kubernetes/tree/v6_dns_probes
-git remote add leblancd https://github.com/leblancd/kubernetes.git
-git remote set-url --push leblancd no_push
 git fetch leblancd v6_dns_probes && git cherry-pick FETCH_HEAD
 counter=$((counter+1))
 
